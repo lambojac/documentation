@@ -1,11 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const csrf = require('csurf');
+const  rateLimit = require('express-rate-limit')
 const cookieParser = require('cookie-parser');
 const expressSession = require('express-session');
 var MemoryStore = require('memorystore')(expressSession)
 const passport = require('passport');
 const flash = require('connect-flash');
+
 
 const app = express();
 
@@ -13,6 +15,15 @@ app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views',);
 
 app.use('/static', express.static(__dirname + '/static'));
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
+
 
 app.use(express.urlencoded({ extended: true }));
 
