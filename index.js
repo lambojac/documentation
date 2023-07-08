@@ -1,4 +1,6 @@
 const express = require('express');
+const swaggerDoc=require("swagger-ui-express")
+const swaggerDocmentation=require("./rapper/documentation")
 const mongoose = require('mongoose');
 const csrf = require('csurf');
 const  rateLimit = require('express-rate-limit')
@@ -13,6 +15,8 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views',);
+app.use("/documentations",swaggerDoc.serve)
+app.use("/documentations",swaggerDoc.setup(swaggerDocmentation))
 
 app.use('/static', express.static(__dirname + '/static'));
 const limiter = rateLimit({
